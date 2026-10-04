@@ -103,6 +103,34 @@ public class CompanyDAO {
             return ps.executeUpdate() > 0;
         }
     }
+    
+     /**
+     * Changes the status only if the company currently has the expected status.
+     * Returns false when nothing was changed (for example, someone else already handled it).
+     */
+    public boolean updateStatusIfCurrent(int companyId, String expectedStatus, String newStatus)
+            throws SQLException {
+        String sql = "UPDATE companies SET status = ? WHERE company_id = ? AND status = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, companyId);
+            ps.setString(3, expectedStatus);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    public int countByStatus(String status) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM companies WHERE status = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, status);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        }
+    }
 
     private static String normalize(String email) {
         return email == null ? null : email.trim().toLowerCase();
