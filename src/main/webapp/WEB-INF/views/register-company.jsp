@@ -41,6 +41,6 @@
         <p><button type="submit">Submit registration</button></p>
     </form>
 
-    <p>Already registered? <a href="${pageContext.request.contextPath}/login">Log in</a></p>
+     <p>Already registered? <a href="${pageContext.request.contextPath}/company-login">Log in</a></p>
 </body>
 </html>

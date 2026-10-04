@@ -29,9 +29,9 @@ public class AuthFilter implements Filter {
         HttpSession session = req.getSession(false);
         String role = (session == null) ? null : (String) session.getAttribute("role");
 
-        // not logged in -> go to the login page
+        // not logged in -> go to the login page for that area
         if (role == null) {
-            resp.sendRedirect(req.getContextPath() + "/login");
+            resp.sendRedirect(req.getContextPath() + loginPageFor(req.getServletPath()));
             return;
         }
 
@@ -50,7 +50,17 @@ public class AuthFilter implements Filter {
 
         chain.doFilter(request, response);
     }
-
+    
+        private static String loginPageFor(String path) {
+        if (isUnder(path, "/admin")) {
+            return "/admin-login";
+        }
+        if (isUnder(path, "/company")) {
+            return "/company-login";
+        }
+        return "/login";
+    }
+        
     private static String requiredRoleFor(String path) {
         if (isUnder(path, "/admin")) {
             return "ADMIN";

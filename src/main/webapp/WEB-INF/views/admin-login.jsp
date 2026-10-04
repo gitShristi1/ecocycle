@@ -4,19 +4,16 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>User Login - EcoCycle</title>
+    <title>Admin Login - EcoCycle</title>
 </head>
 <body>
-    <h1>User Login</h1>
+    <h1>Admin Login</h1>
 
-    <c:if test="${param.registered == '1'}">
-        <p style="color:green;">Account created. Please log in.</p>
-    </c:if>
     <c:if test="${not empty error}">
         <p style="color:red;"><c:out value="${error}"/></p>
     </c:if>
 
-    <form method="post" action="${pageContext.request.contextPath}/login">
+    <form method="post" action="${pageContext.request.contextPath}/admin-login">
         <p>Email<br>
            <input type="email" name="email" value="<c:out value='${param.email}'/>" required></p>
         <p>Password<br>
@@ -24,8 +21,6 @@
         <p><button type="submit">Log in</button></p>
     </form>
 
-    <p>New here? <a href="${pageContext.request.contextPath}/register">Create an account</a></p>
-    <p><a href="${pageContext.request.contextPath}/company-login">Recycling company? Log in here</a> |
-       <a href="${pageContext.request.contextPath}/">Home</a></p>
+    <p><a href="${pageContext.request.contextPath}/">Home</a></p>
 </body>
 </html>

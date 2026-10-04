@@ -1,7 +1,7 @@
 package com.ecocycle.controller;
 
-import com.ecocycle.dao.UserDAO;
-import com.ecocycle.model.User;
+import com.ecocycle.dao.AdminDAO;
+import com.ecocycle.model.Admin;
 import com.ecocycle.util.PasswordUtil;
 import com.ecocycle.util.SessionUtil;
 import jakarta.servlet.ServletException;
@@ -13,15 +13,15 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/admin-login")
+public class AdminLoginServlet extends HttpServlet {
 
-    private final UserDAO userDAO = new UserDAO();
+    private final AdminDAO adminDAO = new AdminDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/admin-login.jsp").forward(req, resp);
     }
 
     @Override
@@ -32,24 +32,19 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         try {
-            User user = userDAO.findByEmail(email);
+            Admin admin = adminDAO.findByEmail(email);
 
-            // same message for "no such email" and "wrong password"
-            if (user == null || !PasswordUtil.matches(password, user.getPasswordHash())) {
+            if (admin == null || !PasswordUtil.matches(password, admin.getPasswordHash())) {
                 showError(req, resp, "Invalid email or password.");
                 return;
             }
-            if ("BLOCKED".equals(user.getStatus())) {
-                showError(req, resp, "Your account has been blocked. Please contact the admin.");
-                return;
-            }
 
-            HttpSession session = SessionUtil.startSession(req, "USER");
-            session.setAttribute("userId", user.getUserId());
-            session.setAttribute("userName", user.getFullName());
-            resp.sendRedirect(req.getContextPath() + "/user/dashboard");
+            HttpSession session = SessionUtil.startSession(req, "ADMIN");
+            session.setAttribute("adminId", admin.getAdminId());
+            session.setAttribute("adminName", admin.getFullName());
+            resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
         } catch (SQLException e) {
-            getServletContext().log("User login failed", e);
+            getServletContext().log("Admin login failed", e);
             showError(req, resp, "Something went wrong. Please try again.");
         }
     }
@@ -57,6 +52,6 @@ public class LoginServlet extends HttpServlet {
     private void showError(HttpServletRequest req, HttpServletResponse resp, String message)
             throws ServletException, IOException {
         req.setAttribute("error", message);
-        req.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/admin-login.jsp").forward(req, resp);
     }
 }

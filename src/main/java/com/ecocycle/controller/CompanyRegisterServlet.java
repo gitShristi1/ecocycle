@@ -92,7 +92,7 @@ public class CompanyRegisterServlet extends HttpServlet {
             c.setCity(city);
             companyDAO.insert(c);      // status starts as PENDING
 
-            resp.sendRedirect(req.getContextPath() + "/login?registered=company");
+            resp.sendRedirect(req.getContextPath() + "/company-login?registered=1");
         } catch (SQLException e) {
             if (e.getErrorCode() == 1) {
                 showErrors(req, resp, List.of(EMAIL_TAKEN));
