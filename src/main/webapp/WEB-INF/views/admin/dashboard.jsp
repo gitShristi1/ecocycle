@@ -8,7 +8,14 @@
 </head>
 <body>
     <h1>Welcome, <c:out value="${sessionScope.adminName}"/>!</h1>
-    <p>Company approvals and platform controls are coming next.</p>
+
+    <h2>Companies</h2>
+    <p>
+        <a href="${pageContext.request.contextPath}/admin/companies">Pending approvals</a>
+        <c:if test="${not empty pendingCount}">(<c:out value="${pendingCount}"/>)</c:if>
+    </p>
+
+    <p>Pricing, monitoring and statistics are coming soon.</p>
     <p><a href="${pageContext.request.contextPath}/logout">Log out</a></p>
 </body>
 </html>
