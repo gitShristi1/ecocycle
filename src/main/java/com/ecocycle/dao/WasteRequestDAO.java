@@ -130,6 +130,41 @@ public class WasteRequestDAO {
         }
     }
 
+    
+    /** Requests this company has accepted (any later status), newest first. */
+    public List<WasteRequest> findByCompany(int companyId) throws SQLException {
+        String sql = SELECT_REQUEST
+                   + "WHERE r.company_id = ? "
+                   + "ORDER BY r.accepted_at DESC, r.request_id DESC";
+        List<WasteRequest> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, companyId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Marks the request as picked up, only if it belongs to this company
+     * and is still ACCEPTED. Returns false when nothing was changed.
+     */
+    public boolean markPickedUp(int requestId, int companyId) throws SQLException {
+        String sql = "UPDATE waste_requests "
+                   + "SET status = 'PICKED_UP', picked_up_at = SYSDATE "
+                   + "WHERE request_id = ? AND company_id = ? AND status = 'ACCEPTED'";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, requestId);
+            ps.setInt(2, companyId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+    
     private static WasteRequest mapRow(ResultSet rs) throws SQLException {
         WasteRequest r = new WasteRequest();
         r.setRequestId(rs.getInt("request_id"));

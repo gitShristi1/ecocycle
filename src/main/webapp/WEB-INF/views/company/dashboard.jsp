@@ -6,8 +6,9 @@
 
 <h1>Welcome, <c:out value="${sessionScope.companyName}"/>!</h1>
 <div class="panel">
-    <p>This is your company dashboard.</p>
-    <p class="muted">Waste requests and product management are coming soon.</p>
+    <p><a href="${pageContext.request.contextPath}/company/requests">Browse open requests</a>
+       or see <a href="${pageContext.request.contextPath}/company/pickups">your pickups</a>.</p>
+    <p class="muted">Product management is coming soon.</p>
 </div>
 
 <jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
