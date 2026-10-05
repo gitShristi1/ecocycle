@@ -1,5 +1,6 @@
 package com.ecocycle.controller;
 
+import com.ecocycle.dao.PaymentDAO;
 import com.ecocycle.dao.WasteRequestDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 public class CompanyPickupsServlet extends HttpServlet {
 
     private final WasteRequestDAO requestDAO = new WasteRequestDAO();
+    private final PaymentDAO paymentDAO = new PaymentDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -39,17 +41,24 @@ public class CompanyPickupsServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        if (!"pickedup".equals(req.getParameter("action"))) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+
+        String action = req.getParameter("action");
+        String msg;
+        try {
+            if ("pickedup".equals(action)) {
+                msg = requestDAO.markPickedUp(requestId, companyId) ? "pickedup" : "invalid";
+            } else if ("pay".equals(action)) {
+                msg = paymentDAO.recordPayment(requestId, companyId) ? "paid" : "invalid";
+            } else {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+        } catch (SQLException e) {
+            getServletContext().log("Pickup action failed: " + action, e);
+            msg = "error";
         }
 
-        try {
-            boolean done = requestDAO.markPickedUp(requestId, companyId);
-            String msg = done ? "pickedup" : "invalid";
-            resp.sendRedirect(req.getContextPath() + "/company/pickups?msg=" + msg);
-        } catch (SQLException e) {
-            throw new ServletException("Could not update request", e);
-        }
+        // redirect after POST, so refreshing does not repeat the action
+        resp.sendRedirect(req.getContextPath() + "/company/pickups?msg=" + msg);
     }
 }
