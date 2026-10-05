@@ -6,8 +6,11 @@
 
 <h1>Welcome, <c:out value="${sessionScope.userName}"/>!</h1>
 <div class="panel">
-    <p>This is your EcoCycle dashboard.</p>
-    <p class="muted">Selling waste and the recycled product store are coming soon.</p>
+    <div class="panel">
+    <p><a href="${pageContext.request.contextPath}/user/sell">Sell waste</a> to a recycling company,
+       or check <a href="${pageContext.request.contextPath}/user/requests">your requests</a>.</p>
+    <p class="muted">The recycled product store is coming soon.</p>
+</div>
 </div>
 
 <jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
