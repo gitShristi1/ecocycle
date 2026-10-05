@@ -34,6 +34,7 @@
                 <th>Rate (&#8377;/kg)</th>
                 <th>Amount (&#8377;)</th>
                 <th>Status</th>
+                <th>Company</th>
                 <th>Submitted</th>
                 <th></th>
             </tr>
@@ -45,6 +46,7 @@
                     <td><fmt:formatNumber value="${r.ratePerKg}" minFractionDigits="2" maxFractionDigits="2"/></td>
                     <td><fmt:formatNumber value="${r.totalAmount}" minFractionDigits="2" maxFractionDigits="2"/></td>
                     <td><c:out value="${r.status}"/></td>
+                    <td><c:out value="${r.companyName}"/></td>
                     <td><fmt:formatDate value="${r.createdAt}" pattern="dd MMM yyyy HH:mm"/></td>
                     <td>
                         <c:if test="${r.status == 'SUBMITTED'}">

@@ -9,6 +9,10 @@ public class WasteRequest {
     private int userId;
     private int wasteTypeId;
     private String wasteTypeName;     // filled in by queries that join waste_types
+    private int companyId;            // 0 until a company accepts
+    private String companyName;       // filled in by queries that join companies
+    private String userName;          // filled in by queries that join users
+    private String userPhone;
     private BigDecimal weightKg;
     private BigDecimal ratePerKg;     // the rate at the time of submission
     private BigDecimal totalAmount;
@@ -17,6 +21,8 @@ public class WasteRequest {
     private String notes;
     private String status;
     private Timestamp createdAt;
+    private Timestamp acceptedAt;
+    private Timestamp pickedUpAt;
 
     public WasteRequest() { }
 
@@ -31,6 +37,18 @@ public class WasteRequest {
 
     public String getWasteTypeName() { return wasteTypeName; }
     public void setWasteTypeName(String wasteTypeName) { this.wasteTypeName = wasteTypeName; }
+
+    public int getCompanyId() { return companyId; }
+    public void setCompanyId(int companyId) { this.companyId = companyId; }
+
+    public String getCompanyName() { return companyName; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
+    public String getUserPhone() { return userPhone; }
+    public void setUserPhone(String userPhone) { this.userPhone = userPhone; }
 
     public BigDecimal getWeightKg() { return weightKg; }
     public void setWeightKg(BigDecimal weightKg) { this.weightKg = weightKg; }
@@ -55,4 +73,10 @@ public class WasteRequest {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public Timestamp getAcceptedAt() { return acceptedAt; }
+    public void setAcceptedAt(Timestamp acceptedAt) { this.acceptedAt = acceptedAt; }
+
+    public Timestamp getPickedUpAt() { return pickedUpAt; }
+    public void setPickedUpAt(Timestamp pickedUpAt) { this.pickedUpAt = pickedUpAt; }
 }

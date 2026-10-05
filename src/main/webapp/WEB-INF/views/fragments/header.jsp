@@ -22,6 +22,7 @@
             </c:when>
             <c:when test="${sessionScope.role == 'COMPANY'}">
                 <a href="${pageContext.request.contextPath}/company/dashboard">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/company/requests">Open Requests</a>
                 <span class="nav-user"><c:out value="${sessionScope.companyName}"/></span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </c:when>
