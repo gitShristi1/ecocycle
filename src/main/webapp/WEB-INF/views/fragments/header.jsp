@@ -26,6 +26,7 @@
             <c:when test="${sessionScope.role == 'ADMIN'}">
                 <a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/admin/companies">Companies</a>
+                <a href="${pageContext.request.contextPath}/admin/pricing">Pricing</a>
                 <span class="nav-user"><c:out value="${sessionScope.adminName}"/></span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </c:when>

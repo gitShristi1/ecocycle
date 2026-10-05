@@ -15,6 +15,11 @@
         </c:if>
     </p>
 </div>
+        
+<div class="panel">
+    <h2>Pricing</h2>
+    <p><a href="${pageContext.request.contextPath}/admin/pricing">Waste rates</a></p>
+</div>
 
 <p class="muted">Pricing, monitoring and statistics are coming soon.</p>
 
