@@ -27,16 +27,20 @@
                 <select name="wasteTypeId" required>
                     <option value="">Choose...</option>
                     <c:forEach items="${wasteTypes}" var="t">
-                        <option value="${t.wasteTypeId}" ${param.wasteTypeId == t.wasteTypeId ? 'selected' : ''}>
+                        <option value="${t.wasteTypeId}" data-rate="${t.ratePerKg}"
+                            ${param.wasteTypeId == t.wasteTypeId ? 'selected' : ''}>
                             <c:out value="${t.typeName}"/> (&#8377;<c:out value="${t.ratePerKg}"/>/kg)
                         </option>
                     </c:forEach>
                 </select>
             </label>
+            
             <label>Weight in kg *
                 <input type="number" name="weightKg" min="0.01" max="10000" step="0.01"
                        value="<c:out value='${param.weightKg}'/>" required>
             </label>
+            <div id="estimate" class="alert alert-success" hidden></div>
+            
             <label>Pickup address *
                 <input type="text" name="pickupAddress" maxlength="300"
                        value="<c:out value='${formAddress}'/>" required>
@@ -53,5 +57,30 @@
         <p class="form-note">The amount is calculated from the current rate when you submit.</p>
     </c:if>
 </div>
+
+<script>
+(function () {
+    var typeSelect = document.querySelector('select[name="wasteTypeId"]');
+    var weightInput = document.querySelector('input[name="weightKg"]');
+    var estimate = document.getElementById('estimate');
+    if (!typeSelect || !weightInput || !estimate) { return; }
+
+    function update() {
+        var option = typeSelect.options[typeSelect.selectedIndex];
+        var rate = parseFloat(option.getAttribute('data-rate'));
+        var weight = parseFloat(weightInput.value);
+        if (isNaN(rate) || isNaN(weight) || weight <= 0) {
+            estimate.hidden = true;
+            return;
+        }
+        estimate.textContent = 'Estimated amount: \u20B9' + (rate * weight).toFixed(2);
+        estimate.hidden = false;
+    }
+
+    typeSelect.addEventListener('change', update);
+    weightInput.addEventListener('input', update);
+    update();   // also runs once, in case the form was redisplayed with values
+})();
+</script>
 
 <jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
