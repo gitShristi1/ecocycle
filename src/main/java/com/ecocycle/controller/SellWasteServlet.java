@@ -1,5 +1,7 @@
 package com.ecocycle.controller;
 
+import com.ecocycle.dao.UserDAO;
+import com.ecocycle.model.User;
 import com.ecocycle.dao.WasteRequestDAO;
 import com.ecocycle.dao.WasteTypeDAO;
 import com.ecocycle.model.WasteRequest;
@@ -26,6 +28,7 @@ public class SellWasteServlet extends HttpServlet {
 
     private final WasteTypeDAO typeDAO = new WasteTypeDAO();
     private final WasteRequestDAO requestDAO = new WasteRequestDAO();
+    private final UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -99,11 +102,25 @@ public class SellWasteServlet extends HttpServlet {
     }
 
     private void show(HttpServletRequest req, HttpServletResponse resp, List<String> errors)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         try {
             req.setAttribute("wasteTypes", typeDAO.findActive());
+
+            if ("POST".equals(req.getMethod())) {
+                // redisplaying after an error: keep what the user typed
+                req.setAttribute("formAddress", req.getParameter("pickupAddress"));
+                req.setAttribute("formCity", req.getParameter("city"));
+            } else {
+                // first visit: start from the address saved in the profile
+                int userId = (Integer) req.getSession().getAttribute("userId");
+                User profile = userDAO.findById(userId);
+                if (profile != null) {
+                    req.setAttribute("formAddress", profile.getAddress());
+                    req.setAttribute("formCity", profile.getCity());
+                }
+            }
         } catch (SQLException e) {
-            throw new ServletException("Could not load waste types", e);
+            throw new ServletException("Could not load the form", e);
         }
         req.setAttribute("errors", errors);
         req.getRequestDispatcher("/WEB-INF/views/user/sell.jsp").forward(req, resp);

@@ -39,11 +39,11 @@
             </label>
             <label>Pickup address *
                 <input type="text" name="pickupAddress" maxlength="300"
-                       value="<c:out value='${param.pickupAddress}'/>" required>
+                       value="<c:out value='${formAddress}'/>" required>
             </label>
             <label>City
                 <input type="text" name="city" maxlength="80"
-                       value="<c:out value='${param.city}'/>">
+                       value="<c:out value='${formCity}'/>">
             </label>
             <label>Notes <small>(optional)</small>
                 <textarea name="notes" maxlength="500" rows="3"><c:out value="${param.notes}"/></textarea>
