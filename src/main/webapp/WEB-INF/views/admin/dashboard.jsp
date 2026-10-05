@@ -1,21 +1,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard - EcoCycle</title>
-</head>
-<body>
-    <h1>Welcome, <c:out value="${sessionScope.adminName}"/>!</h1>
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="title" value="Admin Dashboard"/>
+</jsp:include>
 
+<h1>Welcome, <c:out value="${sessionScope.adminName}"/>!</h1>
+
+<div class="panel">
     <h2>Companies</h2>
     <p>
         <a href="${pageContext.request.contextPath}/admin/companies">Pending approvals</a>
-        <c:if test="${not empty pendingCount}">(<c:out value="${pendingCount}"/>)</c:if>
+        <c:if test="${not empty pendingCount and pendingCount > 0}">
+            <span class="badge"><c:out value="${pendingCount}"/></span>
+        </c:if>
     </p>
+</div>
 
-    <p>Pricing, monitoring and statistics are coming soon.</p>
-    <p><a href="${pageContext.request.contextPath}/logout">Log out</a></p>
-</body>
-</html>
+<p class="muted">Pricing, monitoring and statistics are coming soon.</p>
+
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>

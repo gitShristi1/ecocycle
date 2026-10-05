@@ -1,34 +1,31 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core"%>
 <%@taglib prefix="fmt" uri="jakarta.tags.fmt"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Company Approvals - EcoCycle</title>
-</head>
-<body>
-    <h1>Pending company registrations</h1>
-    <p><a href="${pageContext.request.contextPath}/admin/dashboard">&larr; Back to dashboard</a></p>
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="title" value="Company Approvals"/>
+</jsp:include>
 
-    <c:choose>
-        <c:when test="${param.msg == 'approve'}">
-            <p style="color:green;">Company approved.</p>
-        </c:when>
-        <c:when test="${param.msg == 'reject'}">
-            <p style="color:green;">Company rejected.</p>
-        </c:when>
-        <c:when test="${param.msg == 'stale'}">
-            <p style="color:red;">That company was already handled. The list has been refreshed.</p>
-        </c:when>
-    </c:choose>
+<h1>Pending company registrations</h1>
 
-    <c:if test="${empty pending}">
-        <p>No companies are waiting for approval.</p>
-    </c:if>
+<c:choose>
+    <c:when test="${param.msg == 'approve'}">
+        <div class="alert alert-success">Company approved.</div>
+    </c:when>
+    <c:when test="${param.msg == 'reject'}">
+        <div class="alert alert-success">Company rejected.</div>
+    </c:when>
+    <c:when test="${param.msg == 'stale'}">
+        <div class="alert alert-error">That company was already handled. The list has been refreshed.</div>
+    </c:when>
+</c:choose>
 
-    <c:if test="${not empty pending}">
-        <table border="1" cellpadding="6" cellspacing="0">
+<c:if test="${empty pending}">
+    <div class="panel">No companies are waiting for approval.</div>
+</c:if>
+
+<c:if test="${not empty pending}">
+    <div class="table-wrap">
+        <table class="table">
             <tr>
                 <th>Company</th>
                 <th>Email</th>
@@ -48,13 +45,14 @@
                         <form method="post" action="${pageContext.request.contextPath}/admin/companies"
                               style="display:inline;">
                             <input type="hidden" name="companyId" value="${co.companyId}">
-                            <button type="submit" name="action" value="approve">Approve</button>
-                            <button type="submit" name="action" value="reject">Reject</button>
+                            <button type="submit" name="action" value="approve" class="btn btn-primary btn-small">Approve</button>
+                            <button type="submit" name="action" value="reject" class="btn btn-danger btn-small">Reject</button>
                         </form>
                     </td>
                 </tr>
             </c:forEach>
         </table>
-    </c:if>
-</body>
-</html>
+    </div>
+</c:if>
+
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>

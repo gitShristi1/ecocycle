@@ -1,14 +1,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard - EcoCycle</title>
-</head>
-<body>
-    <h1>Welcome, <c:out value="${sessionScope.userName}"/>!</h1>
-    <p>This is your EcoCycle dashboard. Waste requests and the product store are coming soon.</p>
-    <p><a href="${pageContext.request.contextPath}/logout">Log out</a></p>
-</body>
-</html>
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="title" value="Dashboard"/>
+</jsp:include>
+
+<h1>Welcome, <c:out value="${sessionScope.userName}"/>!</h1>
+<div class="panel">
+    <p>This is your EcoCycle dashboard.</p>
+    <p class="muted">Selling waste and the recycled product store are coming soon.</p>
+</div>
+
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>

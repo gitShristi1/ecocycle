@@ -1,26 +1,25 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Login - EcoCycle</title>
-</head>
-<body>
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="title" value="Admin Login"/>
+</jsp:include>
+
+<div class="form-card">
     <h1>Admin Login</h1>
 
     <c:if test="${not empty error}">
-        <p style="color:red;"><c:out value="${error}"/></p>
+        <div class="alert alert-error"><c:out value="${error}"/></div>
     </c:if>
 
     <form method="post" action="${pageContext.request.contextPath}/admin-login">
-        <p>Email<br>
-           <input type="email" name="email" value="<c:out value='${param.email}'/>" required></p>
-        <p>Password<br>
-           <input type="password" name="password" required></p>
-        <p><button type="submit">Log in</button></p>
+        <label>Email
+            <input type="email" name="email" value="<c:out value='${param.email}'/>" required>
+        </label>
+        <label>Password
+            <input type="password" name="password" required>
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
     </form>
+</div>
 
-    <p><a href="${pageContext.request.contextPath}/">Home</a></p>
-</body>
-</html>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
