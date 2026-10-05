@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Guards every protected area:
+ *   Guards every protected area:
  *   /user/*    needs role USER
  *   /company/* needs role COMPANY
  *   /admin/*   needs role ADMIN

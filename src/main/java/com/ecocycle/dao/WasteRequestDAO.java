@@ -52,6 +52,21 @@ public class WasteRequestDAO {
         }
         return list;
     }
+    
+    /**
+     * Cancels the request only if it belongs to this user and is still SUBMITTED.
+     * Returns false when nothing was changed.
+     */
+    public boolean cancelIfSubmitted(int requestId, int userId) throws SQLException {
+        String sql = "UPDATE waste_requests SET status = 'CANCELLED' "
+                   + "WHERE request_id = ? AND user_id = ? AND status = 'SUBMITTED'";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, requestId);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        }
+    }
 
     private static WasteRequest mapRow(ResultSet rs) throws SQLException {
         WasteRequest r = new WasteRequest();

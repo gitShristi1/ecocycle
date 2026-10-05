@@ -26,4 +26,31 @@ public class MyRequestsServlet extends HttpServlet {
         }
         req.getRequestDispatcher("/WEB-INF/views/user/requests.jsp").forward(req, resp);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        int userId = (Integer) req.getSession().getAttribute("userId");
+
+        int requestId;
+        try {
+            requestId = Integer.parseInt(req.getParameter("requestId"));
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        if (!"cancel".equals(req.getParameter("action"))) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        try {
+            boolean cancelled = requestDAO.cancelIfSubmitted(requestId, userId);
+            String msg = cancelled ? "cancelled" : "cannotcancel";
+            // redirect after POST, so refreshing does not repeat the action
+            resp.sendRedirect(req.getContextPath() + "/user/requests?msg=" + msg);
+        } catch (SQLException e) {
+            throw new ServletException("Could not cancel request", e);
+        }
+    }
 }
