@@ -8,7 +8,8 @@
 <div class="panel">
     <div class="panel">
     <p><a href="${pageContext.request.contextPath}/user/sell">Sell waste</a> to a recycling company,
-       or check <a href="${pageContext.request.contextPath}/user/requests">your requests</a>.</p>
+       check <a href="${pageContext.request.contextPath}/user/requests">your requests</a>,
+       or see <a href="${pageContext.request.contextPath}/user/transactions">your payments</a>.</p>
     <p class="muted">The recycled product store is coming soon.</p>
 </div>
 </div>
