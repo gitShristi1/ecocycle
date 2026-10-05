@@ -3,3 +3,4 @@ nbproject/private/
 *.class
 *.log
 db.properties
+.vscode/

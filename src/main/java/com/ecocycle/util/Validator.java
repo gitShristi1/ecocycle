@@ -1,5 +1,6 @@
 package com.ecocycle.util;
 
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 public final class Validator {
@@ -43,5 +44,24 @@ public final class Validator {
 
     public static boolean tooLong(String s, int maxLength) {
         return s != null && s.length() > maxLength;
+    }
+
+    /**
+     * Parses a decimal such as "2.50". Returns null if it is not a number,
+     * is outside min..max, or has more than maxScale decimal places.
+     */
+    public static BigDecimal parseDecimal(String s, BigDecimal min, BigDecimal max, int maxScale) {
+        if (s == null) {
+            return null;
+        }
+        try {
+            BigDecimal v = new BigDecimal(s.trim());
+            if (v.compareTo(min) < 0 || v.compareTo(max) > 0 || v.scale() > maxScale) {
+                return null;
+            }
+            return v.setScale(maxScale);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
