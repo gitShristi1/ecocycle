@@ -64,4 +64,17 @@ public final class Validator {
             return null;
         }
     }
+
+    /** Parses a whole number within min..max. Returns null when it is not valid. */
+    public static Integer parseInt(String s, int min, int max) {
+        if (s == null) {
+            return null;
+        }
+        try {
+            int v = Integer.parseInt(s.trim());
+            return (v < min || v > max) ? null : v;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }
