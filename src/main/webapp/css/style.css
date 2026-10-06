@@ -199,3 +199,15 @@ main {
     border-radius: 4px;
     background: #eef2ee;
 }
+
+/* ---------- cart ---------- */
+.add-form, .qty-form { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+.qty-form { margin-top: 0; }
+.add-form input[type="number"],
+.qty-form input[type="number"] {
+    width: 4.5rem;
+    padding: 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+.total-row td { font-weight: bold; background: var(--green-light); }

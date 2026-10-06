@@ -56,7 +56,16 @@
             <div class="price">&#8377;<fmt:formatNumber value="${p.price}" minFractionDigits="2" maxFractionDigits="2"/></div>
             <c:choose>
                 <c:when test="${p.stock == 0}"><div class="stock-out">Out of stock</div></c:when>
-                <c:otherwise><div class="muted"><c:out value="${p.stock}"/> in stock</div></c:otherwise>
+                <c:otherwise>
+                    <div class="muted"><c:out value="${p.stock}"/> in stock</div>
+                    <form method="post" action="${pageContext.request.contextPath}/user/cart" class="add-form">
+                        <input type="hidden" name="action" value="add">
+                        <input type="hidden" name="productId" value="${p.productId}">
+                        <input type="number" name="quantity" value="1" min="1"
+                               max="${p.stock < 99 ? p.stock : 99}">
+                        <button type="submit" class="btn btn-primary btn-small">Add to cart</button>
+                    </form>
+                </c:otherwise>
             </c:choose>
         </div>
     </c:forEach>
