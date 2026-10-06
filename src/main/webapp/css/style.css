@@ -149,3 +149,5 @@ main {
 .table { width: 100%; border-collapse: collapse; background: #fff; }
 .table th, .table td { padding: 0.7rem; text-align: left; border-bottom: 1px solid var(--border); }
 .table th { background: var(--green-light); }
+
+.stock-out { color: var(--danger); font-weight: bold; }
