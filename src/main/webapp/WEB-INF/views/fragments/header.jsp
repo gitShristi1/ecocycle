@@ -20,6 +20,7 @@
                 <a href="${pageContext.request.contextPath}/user/transactions">Payments</a>
                 <a href="${pageContext.request.contextPath}/user/store">Store</a>
                 <a href="${pageContext.request.contextPath}/user/cart">Cart<c:if test="${not empty sessionScope.cart and sessionScope.cart.itemCount > 0}"> <span class="badge"><c:out value="${sessionScope.cart.itemCount}"/></span></c:if></a>
+                <a href="${pageContext.request.contextPath}/user/orders">Orders</a>
                 <span class="nav-user"><c:out value="${sessionScope.userName}"/></span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </c:when>

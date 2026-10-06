@@ -17,6 +17,7 @@
     <c:when test="${param.msg == 'cartfull'}"><div class="alert alert-error">Your cart is full (50 different products at most).</div></c:when>
     <c:when test="${param.msg == 'invalid'}"><div class="alert alert-error">That change was not valid.</div></c:when>
     <c:when test="${param.msg == 'review'}"><div class="alert alert-error">Please review your cart before checking out.</div></c:when>
+    <c:when test="${param.msg == 'failed'}"><%-- the details are in cartError, shown below --%></c:when>
 </c:choose>
 <c:if test="${not empty cartError}">
     <div class="alert alert-error"><c:out value="${cartError}"/> Nothing was ordered.</div>
@@ -82,7 +83,12 @@
     <c:if test="${blocked}">
         <div class="alert alert-error">Some items ask for more than is in stock. Adjust the quantities to continue.</div>
     </c:if>
-    <p><a href="${pageContext.request.contextPath}/user/store">&larr; Continue shopping</a></p>
+    <p>
+        <a href="${pageContext.request.contextPath}/user/store">&larr; Continue shopping</a>
+        <c:if test="${not blocked}">
+            &nbsp; <a class="btn btn-primary" href="${pageContext.request.contextPath}/user/checkout">Proceed to checkout</a>
+        </c:if>
+    </p>
 </c:if>
 
 <jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
