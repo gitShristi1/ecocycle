@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ProductDAO {
@@ -139,6 +140,34 @@ public class ProductDAO {
              PreparedStatement ps = con.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
+    }
+
+    /** Store-visible products (active, from approved companies) with the given ids. */
+    public List<Product> findStoreProducts(Collection<Integer> ids) throws SQLException {
+        List<Product> list = new ArrayList<>();
+        if (ids.isEmpty()) {
+            return list;
+        }
+        StringBuilder marks = new StringBuilder();      // builds "?, ?, ?" only
+        for (int i = 0; i < ids.size(); i++) {
+            marks.append(i == 0 ? "?" : ", ?");
+        }
+        String sql = SELECT_PRODUCT
+                   + "WHERE p.status = 'ACTIVE' AND c.status = 'APPROVED' "
+                   + "AND p.product_id IN (" + marks + ")";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            int i = 1;
+            for (Integer id : ids) {
+                ps.setInt(i++, id);
             }
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
