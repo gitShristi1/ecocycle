@@ -18,6 +18,7 @@
                 <a href="${pageContext.request.contextPath}/user/sell">Sell Waste</a>
                 <a href="${pageContext.request.contextPath}/user/requests">My Requests</a>
                 <a href="${pageContext.request.contextPath}/user/transactions">Payments</a>
+                <a href="${pageContext.request.contextPath}/user/store">Store</a>
                 <span class="nav-user"><c:out value="${sessionScope.userName}"/></span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </c:when>

@@ -10,7 +10,7 @@
     <p><a href="${pageContext.request.contextPath}/user/sell">Sell waste</a> to a recycling company,
        check <a href="${pageContext.request.contextPath}/user/requests">your requests</a>,
        or see <a href="${pageContext.request.contextPath}/user/transactions">your payments</a>.</p>
-    <p class="muted">The recycled product store is coming soon.</p>
+    <p>Browse <a href="${pageContext.request.contextPath}/user/store">recycled products</a> from our partner companies.</p>
 </div>
 </div>
 
