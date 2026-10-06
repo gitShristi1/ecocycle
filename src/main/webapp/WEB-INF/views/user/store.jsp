@@ -40,6 +40,16 @@
 <div class="grid">
     <c:forEach items="${products}" var="p">
         <div class="product">
+            <c:choose>
+                <c:when test="${not empty p.imagePath}">
+                    <img class="product-img"
+                         src="${pageContext.request.contextPath}/product-image?f=<c:out value='${p.imagePath}'/>"
+                         alt="<c:out value='${p.productName}'/>">
+                </c:when>
+                <c:otherwise>
+                    <div class="product-img product-img-empty">No picture</div>
+                </c:otherwise>
+            </c:choose>
             <h3><c:out value="${p.productName}"/></h3>
             <div class="muted">by <c:out value="${p.companyName}"/></div>
             <p class="desc"><c:out value="${p.description}"/></p>

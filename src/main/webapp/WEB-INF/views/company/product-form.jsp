@@ -17,7 +17,8 @@
         </div>
     </c:if>
 
-    <form method="post" action="${pageContext.request.contextPath}/company/product-form">
+    <form method="post" enctype="multipart/form-data"
+          action="${pageContext.request.contextPath}/company/product-form">
         <c:if test="${not empty editId}">
             <input type="hidden" name="id" value="${editId}">
         </c:if>
@@ -36,9 +37,29 @@
             <input type="number" name="stock" min="0" max="100000" step="1"
                    value="<c:out value='${fStock}'/>" required>
         </label>
+
+        <c:if test="${not empty currentImage}">
+            <p>Current picture:<br>
+               <img class="product-img" style="max-width:240px;"
+                    src="${pageContext.request.contextPath}/product-image?f=<c:out value='${currentImage}'/>"
+                    alt="Current product picture"></p>
+        </c:if>
+        <label>Picture <small>(JPEG or PNG, up to 2 MB<c:if test="${not empty currentImage}">; leave empty to keep the current one</c:if>)</small>
+            <input type="file" name="image" accept="image/jpeg,image/png">
+        </label>
+
         <button type="submit" class="btn btn-primary btn-block">Save product</button>
     </form>
     <p class="form-note"><a href="${pageContext.request.contextPath}/company/products">Cancel</a></p>
 </div>
+
+<script>
+document.querySelector('input[name="image"]').addEventListener('change', function () {
+    if (this.files[0] && this.files[0].size > 2 * 1024 * 1024) {
+        alert('The picture must be 2 MB or smaller.');
+        this.value = '';
+    }
+});
+</script>
 
 <jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>

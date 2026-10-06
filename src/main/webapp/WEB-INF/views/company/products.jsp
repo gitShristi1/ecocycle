@@ -14,6 +14,7 @@
     <c:when test="${param.msg == 'removed'}"><div class="alert alert-success">Product removed.</div></c:when>
     <c:when test="${param.msg == 'invalid'}"><div class="alert alert-error">That product could not be changed.</div></c:when>
     <c:when test="${param.msg == 'notapproved'}"><div class="alert alert-error">Your company is not approved to list products.</div></c:when>
+    <c:when test="${param.msg == 'toolarge'}"><div class="alert alert-error">That picture is too large (the limit is 2 MB). Nothing was saved.</div></c:when>
 </c:choose>
 
 <c:if test="${empty products}">
@@ -24,6 +25,7 @@
     <div class="table-wrap">
         <table class="table">
             <tr>
+                <th></th>
                 <th>Product</th>
                 <th>Price (&#8377;)</th>
                 <th>Stock</th>
@@ -32,6 +34,16 @@
             </tr>
             <c:forEach items="${products}" var="p">
                 <tr>
+                    <td>
+                        <c:choose>
+                            <c:when test="${not empty p.imagePath}">
+                                <img class="thumb"
+                                     src="${pageContext.request.contextPath}/product-image?f=<c:out value='${p.imagePath}'/>"
+                                     alt="">
+                            </c:when>
+                            <c:otherwise><div class="thumb thumb-empty"></div></c:otherwise>
+                        </c:choose>
+                    </td>
                     <td><c:out value="${p.productName}"/></td>
                     <td><fmt:formatNumber value="${p.price}" minFractionDigits="2" maxFractionDigits="2"/></td>
                     <td>

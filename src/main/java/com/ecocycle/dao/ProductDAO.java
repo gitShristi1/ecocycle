@@ -19,8 +19,9 @@ public class ProductDAO {
 
     /** Saves a new product. The id comes from the trigger, status defaults to ACTIVE. */
     public void insert(Product p) throws SQLException {
-        String sql = "INSERT INTO products (company_id, product_name, description, price, stock) "
-                   + "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO products "
+                   + "(company_id, product_name, description, price, stock, image_path) "
+                   + "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, p.getCompanyId());
@@ -28,6 +29,7 @@ public class ProductDAO {
             ps.setString(3, p.getDescription());
             ps.setBigDecimal(4, p.getPrice());
             ps.setInt(5, p.getStock());
+            ps.setString(6, p.getImagePath());
             ps.executeUpdate();
         }
     }
@@ -64,9 +66,13 @@ public class ProductDAO {
         }
     }
 
-    /** Updates name, description, price and stock. Returns false if nothing matched. */
+    /**
+     * Updates name, description, price, stock and (when one is given) the image.
+     * A null image path keeps the current image. Returns false if nothing matched.
+     */
     public boolean update(Product p) throws SQLException {
-        String sql = "UPDATE products SET product_name = ?, description = ?, price = ?, stock = ? "
+        String sql = "UPDATE products SET product_name = ?, description = ?, price = ?, "
+                   + "stock = ?, image_path = NVL(?, image_path) "
                    + "WHERE product_id = ? AND company_id = ? AND status = 'ACTIVE'";
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -74,8 +80,9 @@ public class ProductDAO {
             ps.setString(2, p.getDescription());
             ps.setBigDecimal(3, p.getPrice());
             ps.setInt(4, p.getStock());
-            ps.setInt(5, p.getProductId());
-            ps.setInt(6, p.getCompanyId());
+            ps.setString(5, p.getImagePath());
+            ps.setInt(6, p.getProductId());
+            ps.setInt(7, p.getCompanyId());
             return ps.executeUpdate() > 0;
         }
     }
