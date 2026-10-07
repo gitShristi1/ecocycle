@@ -28,7 +28,7 @@
             </tr>
             <c:forEach items="${orders}" var="o">
                 <tr>
-                    <td>#<c:out value="${o.orderId}"/></td>
+                    <td><a href="${pageContext.request.contextPath}/user/order?id=${o.orderId}">#<c:out value="${o.orderId}"/></a></td>
                     <td><fmt:formatDate value="${o.createdAt}" pattern="dd MMM yyyy HH:mm"/></td>
                     <td><c:out value="${o.itemCount}"/></td>
                     <td><fmt:formatNumber value="${o.totalAmount}" minFractionDigits="2" maxFractionDigits="2"/></td>

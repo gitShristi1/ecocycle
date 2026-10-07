@@ -1,5 +1,6 @@
 package com.ecocycle.dao;
 
+import com.ecocycle.model.OrderItem;
 import com.ecocycle.model.Order;
 import com.ecocycle.util.DBUtil;
 import java.math.BigDecimal;
@@ -75,12 +76,16 @@ public class OrderDAO {
     }
 
     /** A user's own orders, newest first. */
+        private static final String SELECT_ORDER =
+            "SELECT o.order_id, o.user_id, o.total_amount, o.shipping_address, "
+          + "o.status, o.created_at, "
+          + "(SELECT NVL(SUM(i.quantity), 0) FROM order_items i "
+          + " WHERE i.order_id = o.order_id) AS item_count "
+          + "FROM orders o ";
+
+    /** A user's own orders, newest first. */
     public List<Order> findByUser(int userId) throws SQLException {
-        String sql = "SELECT o.order_id, o.user_id, o.total_amount, o.shipping_address, "
-                   + "o.status, o.created_at, "
-                   + "(SELECT NVL(SUM(i.quantity), 0) FROM order_items i "
-                   + " WHERE i.order_id = o.order_id) AS item_count "
-                   + "FROM orders o WHERE o.user_id = ? "
+        String sql = SELECT_ORDER + "WHERE o.user_id = ? "
                    + "ORDER BY o.created_at DESC, o.order_id DESC";
         List<Order> list = new ArrayList<>();
         try (Connection con = DBUtil.getConnection();
@@ -88,19 +93,62 @@ public class OrderDAO {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Order o = new Order();
-                    o.setOrderId(rs.getInt("order_id"));
-                    o.setUserId(rs.getInt("user_id"));
-                    o.setTotalAmount(rs.getBigDecimal("total_amount"));
-                    o.setShippingAddress(rs.getString("shipping_address"));
-                    o.setStatus(rs.getString("status"));
-                    o.setCreatedAt(rs.getTimestamp("created_at"));
-                    o.setItemCount(rs.getInt("item_count"));
-                    list.add(o);
+                    list.add(mapOrder(rs));
                 }
             }
         }
         return list;
+    }
+
+    /** One order, but only if it belongs to this user. Returns null otherwise. */
+    public Order findByIdForUser(int orderId, int userId) throws SQLException {
+        String sql = SELECT_ORDER + "WHERE o.order_id = ? AND o.user_id = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ps.setInt(2, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? mapOrder(rs) : null;
+            }
+        }
+    }
+
+    /** The items of an order. Call this only after findByIdForUser confirmed the owner. */
+    public List<OrderItem> findItems(int orderId) throws SQLException {
+        String sql = "SELECT i.product_id, p.product_name, c.company_name, i.quantity, i.unit_price "
+                   + "FROM order_items i "
+                   + "JOIN products p ON p.product_id = i.product_id "
+                   + "JOIN companies c ON c.company_id = i.company_id "
+                   + "WHERE i.order_id = ? ORDER BY i.order_item_id";
+        List<OrderItem> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    OrderItem item = new OrderItem();
+                    item.setProductId(rs.getInt("product_id"));
+                    item.setProductName(rs.getString("product_name"));
+                    item.setCompanyName(rs.getString("company_name"));
+                    item.setQuantity(rs.getInt("quantity"));
+                    item.setUnitPrice(rs.getBigDecimal("unit_price"));
+                    list.add(item);
+                }
+            }
+        }
+        return list;
+    }
+
+    private static Order mapOrder(ResultSet rs) throws SQLException {
+        Order o = new Order();
+        o.setOrderId(rs.getInt("order_id"));
+        o.setUserId(rs.getInt("user_id"));
+        o.setTotalAmount(rs.getBigDecimal("total_amount"));
+        o.setShippingAddress(rs.getString("shipping_address"));
+        o.setStatus(rs.getString("status"));
+        o.setCreatedAt(rs.getTimestamp("created_at"));
+        o.setItemCount(rs.getInt("item_count"));
+        return o;
     }
 
     // ---------------------------------------------------------------- helpers
