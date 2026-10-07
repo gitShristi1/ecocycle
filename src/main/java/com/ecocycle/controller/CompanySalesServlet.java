@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 // Access is checked by AuthFilter (role COMPANY).
-@WebServlet("/company/dashboard")
-public class CompanyDashboardServlet extends HttpServlet {
+@WebServlet("/company/sales")
+public class CompanySalesServlet extends HttpServlet {
 
     private final SalesDAO salesDAO = new SalesDAO();
 
@@ -21,10 +21,11 @@ public class CompanyDashboardServlet extends HttpServlet {
         int companyId = (Integer) req.getSession().getAttribute("companyId");
         try {
             req.setAttribute("summary", salesDAO.getSummary(companyId));
+            req.setAttribute("byProduct", salesDAO.findByProduct(companyId));
+            req.setAttribute("recent", salesDAO.findRecent(companyId, 10));
         } catch (SQLException e) {
-            // the dashboard still opens, it just shows no numbers
-            getServletContext().log("Could not load sales summary", e);
+            throw new ServletException("Could not load sales", e);
         }
-        req.getRequestDispatcher("/WEB-INF/views/company/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/company/sales.jsp").forward(req, resp);
     }
 }

@@ -24,10 +24,13 @@
                 <span class="nav-user"><c:out value="${sessionScope.userName}"/></span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </c:when>
-            <c:when test="${sessionScope.role == 'COMPANY'}">
+                        <c:when test="${sessionScope.role == 'COMPANY'}">
                 <a href="${pageContext.request.contextPath}/company/dashboard">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/company/requests">Open Requests</a>
                 <a href="${pageContext.request.contextPath}/company/pickups">My Pickups</a>
+                <a href="${pageContext.request.contextPath}/company/products">Products</a>
+                <a href="${pageContext.request.contextPath}/company/sales">Sales</a>
+                <a href="${pageContext.request.contextPath}/company/reviews">Reviews</a>
                 <span class="nav-user"><c:out value="${sessionScope.companyName}"/></span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </c:when>
