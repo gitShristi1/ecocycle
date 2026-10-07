@@ -224,3 +224,13 @@ main {
     border-radius: 6px;
 }
 .total-row td { font-weight: bold; background: var(--green-light); }
+
+/* ---------- product page and reviews ---------- */
+.detail { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.detail-img { flex: 0 1 340px; }
+.detail-img .product-img { height: 260px; }
+.detail-info { flex: 1 1 300px; }
+.pre { white-space: pre-line; }
+.stars { color: #f5a623; letter-spacing: 1px; }
+.review { background: #fff; border-radius: 8px; padding: 0.8rem 1rem; margin-bottom: 0.6rem; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); }
+.review p { margin: 0.4rem 0 0; }

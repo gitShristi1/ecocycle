@@ -50,7 +50,7 @@
                     <div class="product-img product-img-empty">No picture</div>
                 </c:otherwise>
             </c:choose>
-            <h3><c:out value="${p.productName}"/></h3>
+            <h3><a href="${pageContext.request.contextPath}/user/product?id=${p.productId}"><c:out value="${p.productName}"/></a></h3>
             <div class="muted">by <c:out value="${p.companyName}"/></div>
             <p class="desc"><c:out value="${p.description}"/></p>
             <div class="price">&#8377;<fmt:formatNumber value="${p.price}" minFractionDigits="2" maxFractionDigits="2"/></div>
