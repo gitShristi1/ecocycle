@@ -8,6 +8,8 @@
 <p class="muted">Rates apply to new requests only. Existing requests keep the rate they were submitted with.</p>
 
 <c:choose>
+    <c:when test="${param.msg == 'commission'}"><div class="alert alert-success">Commission updated. It applies to new orders only.</div></c:when>
+    <c:when test="${param.msg == 'badcommission'}"><div class="alert alert-error">The commission must be between 0 and 50 percent, with at most 2 decimals.</div></c:when>
     <c:when test="${param.msg == 'updated'}"><div class="alert alert-success">Rate updated.</div></c:when>
     <c:when test="${param.msg == 'added'}"><div class="alert alert-success">Waste type added.</div></c:when>
     <c:when test="${param.msg == 'toggled'}"><div class="alert alert-success">Waste type updated.</div></c:when>
@@ -15,6 +17,20 @@
     <c:when test="${param.msg == 'invalid'}"><div class="alert alert-error">Invalid input. Rates must be between 0 and 10000 with at most 2 decimals.</div></c:when>
 </c:choose>
 
+<div class="panel">
+    <h2>Platform commission</h2>
+    <p class="muted">The share of every product sale that the platform keeps. Orders already placed keep the percentage they were sold with.</p>
+    <form method="post" action="${pageContext.request.contextPath}/admin/pricing"
+          style="display:flex; gap:0.6rem; flex-wrap:wrap; align-items:flex-end;">
+        <input type="hidden" name="action" value="commission">
+        <label>Commission (%)<br>
+            <input type="number" name="percent" min="0" max="50" step="0.01"
+                   value="<c:out value='${commission}'/>" required style="width:8rem;">
+        </label>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>    
+    
 <div class="table-wrap">
     <table class="table">
         <tr>

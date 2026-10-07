@@ -1,5 +1,6 @@
 package com.ecocycle.controller;
 
+import com.ecocycle.dao.SettingsDAO;
 import com.ecocycle.dao.WasteTypeDAO;
 import com.ecocycle.util.Validator;
 import jakarta.servlet.ServletException;
@@ -18,12 +19,17 @@ public class AdminPricingServlet extends HttpServlet {
     private static final BigDecimal MAX_RATE = new BigDecimal("10000");
 
     private final WasteTypeDAO typeDAO = new WasteTypeDAO();
+    
+        private static final BigDecimal MAX_COMMISSION = new BigDecimal("50");
+
+    private final SettingsDAO settingsDAO = new SettingsDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         try {
             req.setAttribute("types", typeDAO.findAll());
+            req.setAttribute("commission", settingsDAO.getCommissionPercent());
         } catch (SQLException e) {
             throw new ServletException("Could not load waste types", e);
         }
@@ -44,7 +50,9 @@ public class AdminPricingServlet extends HttpServlet {
                 msg = updateRate(req);
             } else if ("toggle".equals(action)) {
                 msg = toggle(req);
-            } else {
+            } else if ("commission".equals(action)) {
+                msg = updateCommission(req);
+            }else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
@@ -90,6 +98,16 @@ public class AdminPricingServlet extends HttpServlet {
             return "invalid";
         }
         return typeDAO.setActive(id, "Y".equals(active)) ? "toggled" : "invalid";
+    }
+    
+    private String updateCommission(HttpServletRequest req) throws SQLException {
+        BigDecimal percent = Validator.parseDecimal(
+                req.getParameter("percent"), BigDecimal.ZERO, MAX_COMMISSION, 2);
+        if (percent == null) {
+            return "badcommission";
+        }
+        settingsDAO.setCommissionPercent(percent);
+        return "commission";
     }
 
     private static int parseId(String s) {
