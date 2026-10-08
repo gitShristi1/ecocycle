@@ -132,6 +132,31 @@ public class CompanyDAO {
         }
     }
 
+    public List<Company> findAll() throws SQLException {
+        String sql = SELECT_COMPANY + "ORDER BY created_at DESC, company_id DESC";
+        List<Company> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        }
+        return list;
+    }
+
+    /** The account's current status, or null if the company does not exist. */
+    public String getStatus(int companyId) throws SQLException {
+        String sql = "SELECT status FROM companies WHERE company_id = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, companyId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
+            }
+        }
+    }
+
     private static String normalize(String email) {
         return email == null ? null : email.trim().toLowerCase();
     }

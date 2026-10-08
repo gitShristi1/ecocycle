@@ -234,3 +234,16 @@ main {
 .stars { color: #f5a623; letter-spacing: 1px; }
 .review { background: #fff; border-radius: 8px; padding: 0.8rem 1rem; margin-bottom: 0.6rem; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); }
 .review p { margin: 0.4rem 0 0; }
+
+/* ---------- filter tabs ---------- */
+.tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.tab {
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.tab.active { background: var(--green); border-color: var(--green); color: #fff; }
