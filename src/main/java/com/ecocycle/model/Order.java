@@ -11,6 +11,7 @@ public class Order {
     private String shippingAddress;
     private String status;
     private Timestamp createdAt;
+    private String userName;
     private int itemCount;        // total units, filled in by the list query
 
     public Order() { }
@@ -32,6 +33,9 @@ public class Order {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public int getItemCount() { return itemCount; }
     public void setItemCount(int itemCount) { this.itemCount = itemCount; }

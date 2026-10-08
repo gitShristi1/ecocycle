@@ -139,6 +139,29 @@ public class OrderDAO {
         return list;
     }
 
+    /** All orders for the admin screen, newest first (at most 200). */
+    public List<Order> findAllForAdmin() throws SQLException {
+        String sql = "SELECT * FROM ("
+                   + " SELECT o.order_id, o.user_id, o.total_amount, o.shipping_address, "
+                   + "        o.status, o.created_at, u.full_name, "
+                   + "        (SELECT NVL(SUM(i.quantity), 0) FROM order_items i "
+                   + "         WHERE i.order_id = o.order_id) AS item_count "
+                   + " FROM orders o JOIN users u ON u.user_id = o.user_id "
+                   + " ORDER BY o.created_at DESC, o.order_id DESC"
+                   + ") WHERE ROWNUM <= 200";
+        List<Order> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Order o = mapOrder(rs);
+                o.setUserName(rs.getString("full_name"));
+                list.add(o);
+            }
+        }
+        return list;
+    }
+
     private static Order mapOrder(ResultSet rs) throws SQLException {
         Order o = new Order();
         o.setOrderId(rs.getInt("order_id"));
