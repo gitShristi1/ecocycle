@@ -10,6 +10,9 @@
     <c:if test="${param.registered == '1'}">
         <div class="alert alert-success">Registration submitted. You can log in once the admin approves your company.</div>
     </c:if>
+    <c:if test="${param.blocked == '1'}">
+        <div class="alert alert-error">Your account is no longer active. Please contact the admin.</div>
+    </c:if>
     <c:if test="${not empty error}">
         <div class="alert alert-error"><c:out value="${error}"/></div>
     </c:if>
