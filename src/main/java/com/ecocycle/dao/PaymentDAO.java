@@ -83,4 +83,35 @@ public class PaymentDAO {
         }
         return list;
     }
+
+    /** All payments for the admin screen, newest first (at most 200). */
+    public List<Payment> findAllForAdmin() throws SQLException {
+        String sql = "SELECT * FROM ("
+                   + " SELECT p.payment_id, p.request_id, t.type_name, c.company_name, "
+                   + "        u.full_name, p.amount, p.paid_at "
+                   + " FROM payments p "
+                   + " JOIN waste_requests r ON r.request_id = p.request_id "
+                   + " JOIN waste_types t ON t.waste_type_id = r.waste_type_id "
+                   + " JOIN companies c ON c.company_id = p.company_id "
+                   + " JOIN users u ON u.user_id = p.user_id "
+                   + " ORDER BY p.paid_at DESC, p.payment_id DESC"
+                   + ") WHERE ROWNUM <= 200";
+        List<Payment> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Payment p = new Payment();
+                p.setPaymentId(rs.getInt("payment_id"));
+                p.setRequestId(rs.getInt("request_id"));
+                p.setWasteTypeName(rs.getString("type_name"));
+                p.setCompanyName(rs.getString("company_name"));
+                p.setUserName(rs.getString("full_name"));
+                p.setAmount(rs.getBigDecimal("amount"));
+                p.setPaidAt(rs.getTimestamp("paid_at"));
+                list.add(p);
+            }
+        }
+        return list;
+    }
 }

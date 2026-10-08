@@ -11,6 +11,7 @@ public class Payment {
     private String companyName;
     private BigDecimal amount;
     private Timestamp paidAt;
+    private String userName;
 
     public Payment() { }
 
@@ -31,4 +32,7 @@ public class Payment {
 
     public Timestamp getPaidAt() { return paidAt; }
     public void setPaidAt(Timestamp paidAt) { this.paidAt = paidAt; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 }

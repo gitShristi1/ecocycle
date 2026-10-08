@@ -165,6 +165,29 @@ public class WasteRequestDAO {
         }
     }
     
+    /** Requests for the admin monitoring screen, newest first (at most 200). A null status means all. */
+    public List<WasteRequest> findForAdmin(String status) throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT * FROM (").append(SELECT_REQUEST);
+        if (status != null) {
+            sql.append("WHERE r.status = ? ");
+        }
+        sql.append("ORDER BY r.created_at DESC, r.request_id DESC) WHERE ROWNUM <= 200");
+
+        List<WasteRequest> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            if (status != null) {
+                ps.setString(1, status);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
+    }
+
     private static WasteRequest mapRow(ResultSet rs) throws SQLException {
         WasteRequest r = new WasteRequest();
         r.setRequestId(rs.getInt("request_id"));
