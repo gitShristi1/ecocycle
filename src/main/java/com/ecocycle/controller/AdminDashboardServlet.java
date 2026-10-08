@@ -1,6 +1,6 @@
 package com.ecocycle.controller;
 
-import com.ecocycle.dao.CompanyDAO;
+import com.ecocycle.dao.StatsDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,16 +13,16 @@ import java.sql.SQLException;
 @WebServlet("/admin/dashboard")
 public class AdminDashboardServlet extends HttpServlet {
 
-    private final CompanyDAO companyDAO = new CompanyDAO();
+    private final StatsDAO statsDAO = new StatsDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         try {
-            req.setAttribute("pendingCount", companyDAO.countByStatus("PENDING"));
+            req.setAttribute("stats", statsDAO.load());
         } catch (SQLException e) {
-            // the dashboard still opens, it just shows no number
-            getServletContext().log("Could not count pending companies", e);
+            // the dashboard still opens, it just shows no numbers
+            getServletContext().log("Could not load platform statistics", e);
         }
         req.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(req, resp);
     }
