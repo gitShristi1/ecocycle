@@ -178,6 +178,58 @@ public class ProductDAO {
         return list;
     }
 
+    /**
+     * Products for the admin screen, newest first (at most 200).
+     * status: null means every status. q: text in the product or company name (blank = anything).
+     */
+    public List<Product> findForAdmin(String status, String q) throws SQLException {
+        StringBuilder where = new StringBuilder();
+        List<Object> params = new ArrayList<>();
+
+        if (status != null) {
+            where.append("p.status = ? ");
+            params.add(status);
+        }
+        if (q != null && !q.trim().isEmpty()) {
+            String like = "%" + q.trim().toLowerCase() + "%";
+            where.append(where.length() > 0 ? "AND " : "");
+            where.append("(LOWER(p.product_name) LIKE ? OR LOWER(c.company_name) LIKE ?) ");
+            params.add(like);
+            params.add(like);
+        }
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM (").append(SELECT_PRODUCT);
+        if (where.length() > 0) {
+            sql.append("WHERE ").append(where);
+        }
+        sql.append("ORDER BY p.created_at DESC, p.product_id DESC) WHERE ROWNUM <= 200");
+
+        List<Product> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
+    }
+
+    /** Admin moderation: hides any active product, whichever company owns it. */
+    public boolean adminRemove(int productId) throws SQLException {
+        String sql = "UPDATE products SET status = 'REMOVED' "
+                   + "WHERE product_id = ? AND status = 'ACTIVE'";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+    
     private static Product mapRow(ResultSet rs) throws SQLException {
         Product p = new Product();
         p.setProductId(rs.getInt("product_id"));
