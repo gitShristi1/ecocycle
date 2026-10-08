@@ -95,6 +95,31 @@ public class FeedbackDAO {
         }
     }
 
+    /** Every review, newest first (at most 200). */
+    public List<Feedback> findAllForAdmin() throws SQLException {
+        String sql = "SELECT * FROM (" + SELECT_FEEDBACK
+                   + "ORDER BY f.created_at DESC, f.feedback_id DESC) WHERE ROWNUM <= 200";
+        List<Feedback> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        }
+        return list;
+    }
+
+    /** Admin moderation: deletes one review. Returns false if it was already gone. */
+    public boolean delete(int feedbackId) throws SQLException {
+        String sql = "DELETE FROM feedback WHERE feedback_id = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, feedbackId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+    
     // ---------------------------------------------------------------- helpers
 
     private boolean update(Connection con, int userId, int productId, int rating, String text)
