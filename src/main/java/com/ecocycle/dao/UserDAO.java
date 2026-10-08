@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class UserDAO {
 
@@ -75,6 +78,57 @@ public class UserDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 rs.next();
                 return rs.getInt(1) > 0;
+            }
+        }
+    }
+    
+    /** Users for the admin screen, newest first (at most 200). A blank q means everyone. */
+    public List<User> search(String q) throws SQLException {
+        boolean filter = q != null && !q.trim().isEmpty();
+        StringBuilder sql = new StringBuilder("SELECT * FROM (").append(SELECT_USER);
+        if (filter) {
+            sql.append("WHERE LOWER(full_name) LIKE ? OR LOWER(email) LIKE ? ");
+        }
+        sql.append("ORDER BY created_at DESC, user_id DESC) WHERE ROWNUM <= 200");
+
+        List<User> list = new ArrayList<>();
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            if (filter) {
+                String like = "%" + q.trim().toLowerCase() + "%";
+                ps.setString(1, like);
+                ps.setString(2, like);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
+    }
+
+    /** Changes the status only if it currently has the expected value. */
+    public boolean updateStatusIfCurrent(int userId, String expected, String newStatus)
+            throws SQLException {
+        String sql = "UPDATE users SET status = ? WHERE user_id = ? AND status = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, userId);
+            ps.setString(3, expected);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    /** The account's current status, or null if the user does not exist. */
+    public String getStatus(int userId) throws SQLException {
+        String sql = "SELECT status FROM users WHERE user_id = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
             }
         }
     }
